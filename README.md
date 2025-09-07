@@ -78,6 +78,9 @@ agentvnstock/
 │   ├── index.html
 │   ├── script.js
 │   └── styles.css
+|__ documents/
+|   |___lib
+|   |___baocao
 ├── gemini_agent.py
 ├── main_agent.py
 ├── api.py
