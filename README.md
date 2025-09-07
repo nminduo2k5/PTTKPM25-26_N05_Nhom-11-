@@ -70,10 +70,6 @@ agentvnstock/
 │       ├── market_schedule.py
 │       ├── performance_monitor.py
 │       └── security_manager.py
-├── deep-learning/
-│   ├── 1.lstm.ipynb
-│   ├── 16.attention-is-all-you-need.ipynb
-│   └── [18 Jupyter notebooks]
 ├── static/
 │   ├── index.html
 │   ├── script.js
@@ -98,7 +94,7 @@ agentvnstock/
 
 ## 🧠 LSTM Neural Network
 
-- 18 mô hình ML: LSTM, GRU, Transformer, CNN...
+- Mô hình ML: LSTM
 - Multi-timeframe prediction: 1 ngày đến 1 năm
 - Confidence scoring, AI enhancement, real-time training
 
