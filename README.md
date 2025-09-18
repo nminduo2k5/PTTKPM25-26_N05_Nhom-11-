@@ -1,4 +1,9 @@
-# 🇻🇳 Duong AI Trading Pro
+# Hệ thống Multi-Agent Viet Nam Stock
+
+<!-- Thông tin tác giả -->
+**Tác giả:** Nguyễn Minh Dương  
+**Mã sinh viên:** 23010441  
+**Nhóm:** 11
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com)
@@ -10,7 +15,7 @@
 
 ## 🎯 Tổng quan
 
-**Duong AI Trading Pro** là hệ thống phân tích đầu tư chứng khoán hoàn chỉnh, tích hợp 6 AI Agents chuyên nghiệp, Gemini AI, và mạng neural LSTM để cung cấp phân tích toàn diện cho thị trường chứng khoán Việt Nam và quốc tế.
+**Hệ thống Multi-Agent Viet Nam Stock** là hệ thống phân tích đầu tư chứng khoán hoàn chỉnh, tích hợp 6 AI Agents chuyên nghiệp, Gemini AI, và mạng neural LSTM để cung cấp phân tích toàn diện cho thị trường chứng khoán Việt Nam và quốc tế.
 
 ### ✨ Tính năng nổi bật
 
@@ -94,13 +99,6 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-#### FastAPI Backend (Tùy chọn)
-```bash
-python api.py
-# Hoặc
-uvicorn api:app --host 0.0.0.0 --port 8000 --reload
-```
-
 ### 4. Cấu hình API (trong ứng dụng)
 - Mở sidebar trong Streamlit
 - Nhập **Gemini API key** (miễn phí tại [Google AI Studio](https://aistudio.google.com/apikey))
@@ -154,19 +152,7 @@ uvicorn api:app --host 0.0.0.0 --port 8000 --reload
 - **AI enhancement**: Kết hợp với Gemini AI
 - **Real-time training**: Cập nhật mô hình liên tục
 
-### **Các mô hình có sẵn:**
-```
-1. LSTM Basic                    11. Bidirectional LSTM Seq2Seq
-2. Bidirectional LSTM           12. LSTM Seq2Seq VAE
-3. LSTM 2-Path                  13. GRU Seq2Seq
-4. GRU                          14. Bidirectional GRU Seq2Seq
-5. Bidirectional GRU            15. GRU Seq2Seq VAE
-6. GRU 2-Path                   16. Attention (Transformer)
-7. Vanilla RNN                  17. CNN Seq2Seq
-8. Bidirectional Vanilla        18. Dilated CNN Seq2Seq
-9. Vanilla 2-Path
-10. LSTM Seq2Seq
-```
+
 
 ## ⚙️ Cài đặt đầu tư cá nhân
 
@@ -446,16 +432,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **🚀 Version 2.0 - Professional AI Trading System**
 
 *"Đầu tư thông minh với sức mạnh của AI và Machine Learning!"* 💪
-
-### ⚠️ Disclaimer
-
-**Cảnh báo quan trọng**: Đây là công cụ hỗ trợ phân tích, **KHÔNG PHẢI lời khuyên đầu tư tuyệt đối**.
-
-- Dữ liệu có thể không chính xác 100%
-- Luôn thực hiện nghiên cứu riêng (DYOR)
-- Chỉ đầu tư số tiền có thể chấp nhận mất
-- Tác giả không chịu trách nhiệm về tổn thất tài chính
-
-**"Còn thở là còn gỡ, dừng lại là thất bại!"** 🚀
-
 </div>
