@@ -65,10 +65,6 @@ agentvnstock/
 │       ├── market_schedule.py       # Market timing logic
 │       ├── performance_monitor.py   # System monitoring
 │       └── security_manager.py      # Security utilities
-├── deep-learning/                   # LSTM Research & Development
-│   ├── 1.lstm.ipynb                # Basic LSTM implementation
-│   ├── 16.attention-is-all-you-need.ipynb # Transformer models
-│   └── [18 Jupyter notebooks]      # Various ML approaches
 ├── static/                          # Web interface
 │   ├── index.html                   # Professional web UI
 │   ├── script.js                    # Interactive features
@@ -392,12 +388,7 @@ pip install tensorflow scikit-learn --upgrade
 - 🔮 Automated trading signals
 
 ## 🤝 Đóng góp
-
-1. Fork repository
-2. Tạo feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push branch: `git push origin feature/amazing-feature`
-5. Tạo Pull Request
+nminduo2k5 🤖
 
 ## 📞 Hỗ trợ
 
@@ -408,8 +399,10 @@ pip install tensorflow scikit-learn --upgrade
 
 ## 🙏 Acknowledgments
 
-- [Google Gemini](https://ai.google.dev) - AI chatbot với offline fallback
-- [CrewAI](https://crewai.com) - Multi-agent framework
+- [Google Gemini](https://ai.google.dev) - AI chatbot
+- [CrewAI](https://crewai.com) - Multi-agent framework sử dụng serper.dev
+- [Serper.dev](https://serper.dev) - Search engine API
+- [Scikit-Learn](https://scikit-learn.org) - Machine learning library
 - [vnstock](https://github.com/thinh-vu/vnstock) - Vietnamese stock data
 - [Streamlit](https://streamlit.io) - Beautiful web framework
 - [FastAPI](https://fastapi.tiangolo.com) - Modern API framework
