@@ -93,7 +93,7 @@ class PricePredictor:
                     # Get real stock news and data from CrewAI
                     stock_news = loop.run_until_complete(self.crewai_collector.get_stock_news(symbol, limit=5))
                     
-                    # Get available symbols to find company info
+                    # Get available symbols to find company infomation
                     symbols = loop.run_until_complete(self.crewai_collector.get_available_symbols())
                     company_info = next((s for s in symbols if s['symbol'] == symbol), {})
                     

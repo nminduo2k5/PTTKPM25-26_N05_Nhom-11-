@@ -9,7 +9,6 @@ from src.data.vn_stock_api import VNStockAPI
 from src.ui.styles import load_custom_css
 from src.data.sqlite_manager import SQLiteManager
 import json
-
 # Cấu hình trang chuyên nghiệp
 st.set_page_config(
     page_title="Hệ thống Multi-Agent Viet Nam Stock",

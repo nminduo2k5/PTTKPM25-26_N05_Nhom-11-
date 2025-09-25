@@ -4,7 +4,6 @@ from datetime import datetime
 import re
 import asyncio
 from agents.international_underground_news import InternationalUndergroundNewsAgent
-
 class InternationalMarketNews:
     def __init__(self):
         self.name = "International Market News Agent"

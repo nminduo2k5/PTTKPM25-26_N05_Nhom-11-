@@ -8,7 +8,6 @@ import time
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
-
 class UnifiedAIAgent:
     def __init__(self, gemini_api_key: str = None):
         """
