@@ -30,43 +30,66 @@ class UnifiedAIAgent:
             try:
                 genai.configure(api_key=gemini_api_key)
                 
-                # Try different model names (Google đã update)
+                # Try different model names (Google đã update 2024-2025)
                 model_names = [
-                    'gemini-1.5-flash',     # Model mới nhất
-                    'gemini-1.5-pro',       # Pro version
-                    'gemini-1.0-pro',       # Fallback
-                    'models/gemini-1.5-flash',  # With prefix
-                    'models/gemini-1.0-pro'     # With prefix fallback
+                    'gemini-2.0-flash-exp',         # Experimental 2.0 (Dec 2024)
+                    'gemini-2.0-flash-thinking-exp', # Thinking mode (Jan 2025)
+                    'gemini-1.5-flash',             # Stable production
+                    'gemini-1.5-flash-8b',          # Lightweight fast
+                    'gemini-1.5-flash-002',         # Latest 1.5 flash
+                    'gemini-1.5-pro',               # Pro version
+                    'gemini-1.5-pro-002',           # Latest 1.5 pro
+                    'gemini-1.0-pro',               # Legacy fallback
+                    'gemini-1.0-pro-001'            # Legacy with version
                 ]
                 
                 model_initialized = False
                 for model_name in model_names:
                     try:
                         model = genai.GenerativeModel(model_name)
-                        # Test the model with a simple request
-                        test_response = model.generate_content("Hello")
-                        if test_response and test_response.text:
+                        # Skip test for quota-sensitive models
+                        if 'pro' in model_name.lower():
+                            # Just initialize without testing to avoid quota usage
                             self.available_models['gemini'] = model
                             self.gemini_api_key = gemini_api_key
                             self.current_model_name = model_name
-                            logger.info(f"✅ Gemini AI initialized with model: {model_name}")
+                            logger.info(f"✅ Gemini AI initialized with model: {model_name} (no test)")
                             model_initialized = True
                             break
+                        else:
+                            # Test non-pro models
+                            test_response = model.generate_content("Hi")
+                            if test_response and test_response.text:
+                                self.available_models['gemini'] = model
+                                self.gemini_api_key = gemini_api_key
+                                self.current_model_name = model_name
+                                logger.info(f"✅ Gemini AI initialized with model: {model_name}")
+                                model_initialized = True
+                                break
                     except Exception as e:
-                        logger.warning(f"⚠️ Model {model_name} not available: {e}")
+                        error_msg = str(e).lower()
+                        if 'quota' in error_msg or '429' in error_msg:
+                            logger.warning(f"⚠️ Model {model_name} quota exceeded, trying next...")
+                        else:
+                            logger.warning(f"⚠️ Model {model_name} not available: {e}")
                         continue
                 
                 if not model_initialized:
-                    # If no model works, raise error
-                    raise Exception("No available Gemini models found")
+                    # If no model works, still allow offline mode
+                    logger.warning("⚠️ No Gemini models available, will use offline mode")
+                    self.available_models = {}
                     
             except Exception as e:
                 logger.error(f"❌ Failed to initialize Gemini: {str(e)}")
                 # Don't set available_models if initialization failed
                 self.available_models = {}
         
+        # Allow initialization without models for offline mode
         if not self.available_models:
-            raise ValueError("Gemini AI must be configured.")
+            logger.warning("⚠️ No AI models available, system will run in offline mode")
+            self.offline_mode = True
+        else:
+            self.offline_mode = False
     
     def test_connection(self):
         """Test AI API connections"""
@@ -119,6 +142,11 @@ class UnifiedAIAgent:
         """
         Generate response with automatic fallback to offline mode if primary fails
         """
+        # Check if we're already in offline mode
+        if getattr(self, 'offline_mode', True) or not self.available_models:
+            logger.info("📴 Using offline mode (no AI models available)")
+            return self._generate_offline_fallback(prompt, task_type)
+        
         try:
             response = self.generate_with_model(prompt, 'gemini', max_tokens)
             return {
@@ -128,18 +156,8 @@ class UnifiedAIAgent:
             }
         except Exception as e:
             logger.error(f"Gemini model failed: {str(e)}")
-            # Check if it's a quota/rate limit error
-            error_str = str(e).lower()
-            if any(keyword in error_str for keyword in ['quota', 'rate limit', 'exceeded', 'limit']):
-                # Use offline fallback for quota issues
-                return self._generate_offline_fallback(prompt, task_type)
-            else:
-                return {
-                    'response': f'Gemini AI failed: {str(e)}',
-                    'model_used': None,
-                    'success': False,
-                    'error': str(e)
-                }
+            # Always use offline fallback when Gemini fails
+            return self._generate_offline_fallback(prompt, task_type)
     
     def _generate_offline_fallback(self, prompt: str, task_type: str) -> Dict[str, Any]:
         """
@@ -688,13 +706,17 @@ Trả lời bằng tiếng Việt, chuyên nghiệp, chi tiết, thực tiễn, 
             if provider.lower() == 'gemini':
                 genai.configure(api_key=api_key)
                 
-                # Try different model names (Google đã update)
+                # Try different model names (Google đã update 2024-2025)
                 model_names = [
-                    'gemini-1.5-flash',     # Model mới nhất
-                    'gemini-1.5-pro',       # Pro version
-                    'gemini-1.0-pro',       # Fallback
-                    'models/gemini-1.5-flash',  # With prefix
-                    'models/gemini-1.0-pro'     # With prefix fallback
+                    'gemini-2.0-flash-exp',         # Experimental 2.0 (Dec 2024)
+                    'gemini-2.0-flash-thinking-exp', # Thinking mode (Jan 2025)
+                    'gemini-1.5-flash',             # Stable production
+                    'gemini-1.5-flash-8b',          # Lightweight fast
+                    'gemini-1.5-flash-002',         # Latest 1.5 flash
+                    'gemini-1.5-pro',               # Pro version
+                    'gemini-1.5-pro-002',           # Latest 1.5 pro
+                    'gemini-1.0-pro',               # Legacy fallback
+                    'gemini-1.0-pro-001'            # Legacy with version
                 ]
                 
                 for model_name in model_names:

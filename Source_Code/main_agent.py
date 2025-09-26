@@ -35,13 +35,22 @@ class MainAgent:
                 self.gemini_agent = UnifiedAIAgent(
                     gemini_api_key=gemini_api_key
                 )
-                connection_results = self.gemini_agent.test_connection()
-                active_models = [model for model, status in connection_results.items() if status]
-                model_info = self.gemini_agent.get_model_info()
-                print(f"✅ AI Models initialized: {', '.join(active_models)} ({model_info.get('current_model', 'Unknown')})")
+                # Test connection only if models are available
+                if self.gemini_agent.available_models:
+                    connection_results = self.gemini_agent.test_connection()
+                    active_models = [model for model, status in connection_results.items() if status]
+                    model_info = self.gemini_agent.get_model_info()
+                    print(f"✅ AI Models initialized: {', '.join(active_models)} ({model_info.get('current_model', 'Unknown')})")
+                else:
+                    print("⚠️ No AI models available, system will run in offline mode")
             except Exception as e:
                 print(f"⚠️ AI initialization failed: {e}")
-                self.gemini_agent = None
+                # Still create agent for offline mode
+                try:
+                    self.gemini_agent = UnifiedAIAgent()
+                    print("📴 Running in offline mode")
+                except:
+                    self.gemini_agent = None
         
         # Update VN API with CrewAI keys
         if gemini_api_key or serper_api_key:
@@ -77,21 +86,33 @@ class MainAgent:
             # Create new agent
             self.gemini_agent = UnifiedAIAgent(gemini_api_key=api_key)
             
-            connection_results = self.gemini_agent.test_connection()
-            model_info = self.gemini_agent.get_model_info()
-            
-            if model_info['is_active']:
-                print(f"✅ Gemini API key updated successfully ({model_info['current_model']})")
+            # Test connection only if models are available
+            if self.gemini_agent.available_models:
+                connection_results = self.gemini_agent.test_connection()
+                model_info = self.gemini_agent.get_model_info()
+                
+                if model_info['is_active']:
+                    print(f"✅ Gemini API key updated successfully ({model_info['current_model']})")
+                    self._integrate_ai_with_agents()
+                    return True
+                else:
+                    print("⚠️ Gemini models not available, running in offline mode")
+                    self._integrate_ai_with_agents()
+                    return True  # Still return True for offline mode
+            else:
+                print("📴 No Gemini models available, system will use offline mode")
+                self._integrate_ai_with_agents()
+                return True  # Still return True for offline mode
+        except Exception as e:
+            print(f"⚠️ Gemini setup issue: {e} - Using offline mode")
+            # Create offline agent
+            try:
+                self.gemini_agent = UnifiedAIAgent()
                 self._integrate_ai_with_agents()
                 return True
-            else:
-                print("❌ Gemini API key invalid or model not available")
+            except:
                 self.gemini_agent = None
                 return False
-        except Exception as e:
-            print(f"❌ Failed to set Gemini API key: {e}")
-            self.gemini_agent = None
-            return False
     
 
     
@@ -303,7 +324,7 @@ class MainAgent:
                         "ticker_news": results[3] if not isinstance(results[3], Exception) else None
                     }
             
-            # Use Gemini to generate expert advice
+            # Use Gemini to generate expert advice (works in both online and offline mode)
             if self.gemini_agent:
                 try:
                     gemini_response = await run_in_threadpool(
