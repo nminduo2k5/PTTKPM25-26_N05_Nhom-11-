@@ -8,6 +8,7 @@ from main_agent import MainAgent
 from src.data.vn_stock_api import VNStockAPI
 from src.ui.styles import load_custom_css
 from src.data.sqlite_manager import SQLiteManager
+from chart_functions import create_stock_prediction_chart, create_technical_indicators_chart, create_volume_analysis_chart
 import json
 # Cấu hình trang chuyên nghiệp
 st.set_page_config(
@@ -800,14 +801,102 @@ def display_price_prediction(pred, investment_amount=10000000, risk_tolerance=50
                                 if conf_int and conf_int.get('lower') and conf_int.get('upper'):
                                     st.caption(f"🧠 CI: {conf_int['lower']:.2f} - {conf_int['upper']:.2f}")
     
-    # Show method information
-    if pred.get('prediction_methods'):
-        with st.expander("🔧 Phương pháp dự đoán"):
-            methods = pred['prediction_methods']
-            for method in methods:
-                st.write(f"• {method}")
-            if pred.get('primary_method'):
-                st.write(f"**Phương pháp chính:** {pred['primary_method']}")
+    # 📊 BIỂU ĐỒ DỰ ĐOÁN CHUYÊN NGHIỆP
+    st.markdown("---")
+    st.markdown("### 📊 Biểu đồ Dự đoán Chuyên nghiệp")
+    
+    # Tạo biểu đồ chính
+    try:
+        symbol_name = pred.get('symbol', 'Stock')
+        chart_fig = create_stock_prediction_chart(pred, symbol_name, current_price, predictions)
+        st.plotly_chart(chart_fig, use_container_width=True)
+        
+        # Tạo tabs cho các biểu đồ bổ sung
+        chart_tab1, chart_tab2, chart_tab3 = st.tabs(["📈 Chỉ báo Kỹ thuật", "📊 Phân tích Khối lượng", "🔧 Thông tin Phương pháp"])
+        
+        with chart_tab1:
+            # Biểu đồ chỉ báo kỹ thuật
+            tech_fig = create_technical_indicators_chart(pred, symbol_name)
+            st.plotly_chart(tech_fig, use_container_width=True)
+            
+            # Hiển thị giải thích chỉ báo
+            with st.expander("💡 Giải thích Chỉ báo Kỹ thuật"):
+                st.markdown("""
+                **📊 RSI (Relative Strength Index):**
+                - RSI > 70: Quá mua (có thể giảm giá)
+                - RSI < 30: Quá bán (có thể tăng giá)
+                - RSI 30-70: Vùng trung tính
+                
+                **📈 MACD (Moving Average Convergence Divergence):**
+                - MACD > 0: Tín hiệu tăng giá
+                - MACD < 0: Tín hiệu giảm giá
+                
+                **⚡ Momentum:**
+                - Momentum dương: Xu hướng tăng
+                - Momentum âm: Xu hướng giảm
+                """)
+        
+        with chart_tab2:
+            # Biểu đồ khối lượng
+            volume_fig = create_volume_analysis_chart(symbol_name, current_price)
+            st.plotly_chart(volume_fig, use_container_width=True)
+            
+            # Giải thích về khối lượng
+            with st.expander("💡 Phân tích Khối lượng Giao dịch"):
+                st.markdown("""
+                **📊 Khối lượng Giao dịch:**
+                - Khối lượng cao + Giá tăng: Xu hướng tăng mạnh
+                - Khối lượng cao + Giá giảm: Áp lực bán mạnh
+                - Khối lượng thấp: Thiếu sự quan tâm của nhà đầu tư
+                
+                **🎯 Ý nghĩa:**
+                - Xác nhận xu hướng giá
+                - Dự báo sự đảo chiều xu hướng
+                - Đánh giá sức mạnh của xu hướng
+                """)
+        
+        with chart_tab3:
+            # Thông tin phương pháp dự đoán
+            if pred.get('prediction_methods'):
+                st.markdown("### 🔧 Phương pháp Dự đoán")
+                methods = pred['prediction_methods']
+                for method in methods:
+                    st.write(f"• {method}")
+                if pred.get('primary_method'):
+                    st.write(f"**Phương pháp chính:** {pred['primary_method']}")
+            
+            # Thông tin mô hình LSTM nếu có
+            if 'LSTM' in method and pred.get('model_performance'):
+                st.markdown("### 🧠 Thông tin Mô hình LSTM")
+                perf = pred['model_performance']
+                
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Train RMSE", f"{perf.get('train_rmse', 0):.2f}")
+                with col2:
+                    st.metric("Test RMSE", f"{perf.get('test_rmse', 0):.2f}")
+                with col3:
+                    st.metric("Confidence", f"{perf.get('confidence', 0):.1f}%")
+                
+                st.info("🧠 **LSTM Neural Network**: Mạng nơ-ron sâu được huấn luyện trên dữ liệu lịch sử để dự đoán xu hướng giá tương lai")
+            
+            # Thông tin về độ tin cậy
+            st.markdown("### 🎯 Độ Tin cậy Dự đoán")
+            confidence_level = pred.get('confidence', 50)
+            if confidence_level > 80:
+                st.success(f"🎯 Độ tin cậy cao: {confidence_level:.1f}% - Dự đoán đáng tin cậy")
+            elif confidence_level > 60:
+                st.info(f"📊 Độ tin cậy trung bình: {confidence_level:.1f}% - Cần kết hợp với phân tích khác")
+            else:
+                st.warning(f"⚠️ Độ tin cậy thấp: {confidence_level:.1f}% - Thận trọng khi đưa ra quyết định")
+    
+    except Exception as e:
+        st.error(f"❌ Không thể tạo biểu đồ: {e}")
+        st.info("📊 Biểu đồ sẽ được hiển thị khi có đủ dữ liệu dự đoán")
+    
+    st.markdown("---")
+    
+
 
 def display_risk_assessment(risk):
     if risk.get('error'):

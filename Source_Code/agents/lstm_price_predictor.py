@@ -21,7 +21,7 @@ class LSTMPricePredictor:
         self.ai_agent = None
         self.scaler = MinMaxScaler(feature_range=(0, 1))
         self.model = None
-        self.look_back = 60  # Use 60 days for better performance (modern approach)
+        self.look_back = 60  # Use 365 days for better performance (modern approach)
         self.model_cache = {}  # Cache trained models
         self.model_cache_time = {}  # Track model training time
         
