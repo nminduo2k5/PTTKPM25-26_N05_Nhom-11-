@@ -3,7 +3,7 @@
 <!-- Thông tin tác giả -->
 **Tác giả:** Nguyễn Minh Dương  
 **Mã sinh viên:** 23010441  
-**Nhóm:** 11
+**Nhóm:** 10
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com)
